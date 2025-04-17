@@ -1,0 +1,1 @@
+# msal-credential-manager
