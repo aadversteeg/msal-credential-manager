@@ -1,21 +1,19 @@
 using Microsoft.Identity.Client;
+using Core.Infrastructure.WebApi.Services;
 
-namespace Core.Infrastructure.ConsoleApp.Models
+namespace Core.Infrastructure.WebApi.Models
 {
     public class MsalCredentialManager
     {
         private readonly IPublicClientApplication _msalClient;
         private readonly string[] _scopes;
 
-        public MsalCredentialManager(string clientId, string tenantId, string authority, string[] scopes)
+        public MsalCredentialManager(TokenCacheService tokenCacheService, string clientId, string tenantId, string authority, string[] scopes)
         {
             _scopes = scopes;
 
-            _msalClient = PublicClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority(authority)
-                .WithRedirectUri("http://localhost")
-                .Build();
+            // Get a cached client application from the token cache service
+            _msalClient = tokenCacheService.GetClientApplication(clientId, tenantId, authority);
         }
 
         public async Task<AuthenticationResult> AcquireTokenInteractiveAsync()
@@ -43,9 +41,9 @@ namespace Core.Infrastructure.ConsoleApp.Models
                     .WithPrompt(Prompt.SelectAccount)
                     .ExecuteAsync();
             }
-            catch (Exception ex)
+            catch
             {
-                // No console output here
+                // No console output here, just rethrow
                 throw;
             }
         }

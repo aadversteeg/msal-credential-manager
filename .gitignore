@@ -398,3 +398,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Token cache
+src/Core.Infrastructure.WebApi/token_cache/
